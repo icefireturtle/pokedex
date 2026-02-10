@@ -1,11 +1,14 @@
 package main
+
 import (
 	"fmt"
 	"strings"
 	"bufio"
 	"os"
 )
+
 func startREPL() {
+	cfg := &Config{}
 scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -17,7 +20,7 @@ scanner := bufio.NewScanner(os.Stdin)
 		
 		command, exists := commands[clean[0]]
 		if exists {
-			err:= command.callback()
+			err:= command.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -30,24 +33,6 @@ scanner := bufio.NewScanner(os.Stdin)
 	}
 }
 
-func commandExit () error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
-
-func commandHelp() error {
-	//Header
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage:")
-	fmt.Println()
-
-	for _, directive := range commands {
-		fmt.Printf("%s: %s\n", directive.name, directive.description)
-	}
-	return nil
-}
-
 func cleanInput(text string) []string {
 	clean := strings.ToLower(strings.TrimSpace(text))
 	words := strings.Fields(clean)
@@ -57,7 +42,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name string
 	description string
-	callback func() error
+	callback func(cfg *Config) error
 }
 
 var commands map[string]cliCommand
@@ -74,5 +59,32 @@ func init() {
 			description: "Displays a help message",
 			callback: commandHelp,
 		},
+		"map": {
+			name: "map",
+			description: "Displays the names of the next 20 location areas in the Pokemon World",
+			callback: commandMap,
+		},
+		"mapb": {
+			name: "mapb",
+			description: "Displays the names of the previous 20 location areas in the Pokemon World",
+			callback: commandMapBack,
+		},
 	}
+}
+
+type Locations struct {
+	Count int `json:"count"`
+	Next *string `json:"next"`
+	Previous *string `json:"previous"`
+	Results []Location `json:"results"`
+}
+
+type Location struct {
+	Name string `json:"name"`
+	URL string `json:"url"`
+}
+
+type Config struct {
+	Next string
+	Previous string
 }
