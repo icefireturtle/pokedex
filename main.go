@@ -1,8 +1,8 @@
 package main
 
-import "fmt"
+//import "fmt"
 
 func main() {
-	fmt.Println("Welcome to the Pokedex!")
+	//fmt.Println("Welcome to the Pokedex!")
 	startREPL()
 }
