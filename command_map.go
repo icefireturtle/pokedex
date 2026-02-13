@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"encoding/json"
 )
-func commandMap(cfg *Config) error {
+func commandMap(cfg *Config, args ...string) error {
 	url := "https://pokeapi.co/api/v2/location-area/"
 	if cfg.Next != "" {
 		url = cfg.Next

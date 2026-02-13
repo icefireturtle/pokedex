@@ -1,35 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"strings"
 	"bufio"
+	"fmt"
 	"os"
+	"strings"
 )
 
 func startREPL() {
 	cfg := &Config{}
-scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
-		scanner.Scan() 
+		scanner.Scan()
 		clean := cleanInput(scanner.Text())
 		if len(clean) == 0 {
 			continue
 		}
-		
+
 		command, exists := commands[clean[0]]
 		if exists {
-			err:= command.callback(cfg)
+			err := command.callback(cfg, clean[1:]...)
 			if err != nil {
 				fmt.Println(err)
 			}
 		} else {
 			fmt.Println("Unknown command")
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "reading standard input:", err)
 	}
 }
 
@@ -38,11 +35,11 @@ func cleanInput(text string) []string {
 	words := strings.Fields(clean)
 	return words
 }
-	
+
 type cliCommand struct {
-	name string
+	name        string
 	description string
-	callback func(cfg *Config) error
+	callback    func(cfg *Config, args ...string) error
 }
 
 var commands map[string]cliCommand
@@ -50,41 +47,55 @@ var commands map[string]cliCommand
 func init() {
 	commands = map[string]cliCommand{
 		"exit": {
-			name: "exit",
+			name:        "exit",
 			description: "Exit the Pokedex",
-			callback: commandExit,
+			callback:    commandExit,
 		},
 		"help": {
-			name: "help",
+			name:        "help",
 			description: "Displays a help message",
-			callback: commandHelp,
+			callback:    commandHelp,
 		},
 		"map": {
-			name: "map",
+			name:        "map",
 			description: "Displays the names of the next 20 location areas in the Pokemon World",
-			callback: commandMap,
+			callback:    commandMap,
 		},
 		"mapb": {
-			name: "mapb",
+			name:        "mapb",
 			description: "Displays the names of the previous 20 location areas in the Pokemon World",
-			callback: commandMapBack,
+			callback:    commandMapBack,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explores the map and finds pokeman in the area",
+			callback:    commandExplore,
 		},
 	}
 }
 
 type Locations struct {
-	Count int `json:"count"`
-	Next *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results []Location `json:"results"`
+	Count    int        `json:"count"`
+	Next     *string    `json:"next"`
+	Previous *string    `json:"previous"`
+	Results  []Location `json:"results"`
 }
 
 type Location struct {
 	Name string `json:"name"`
-	URL string `json:"url"`
+	URL  string `json:"url"`
 }
 
 type Config struct {
-	Next string
+	Next     string
 	Previous string
+}
+
+type Explore struct {
+	Name              string `json:"name"`
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
 }
