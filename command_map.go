@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Command callbacks for map and mapb commands. These will call the pokeapi client to get the next or previous page of locations and print their names to the console.
 func commandMapf(cfg *Config, args ...string) error {
 	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
