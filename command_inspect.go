@@ -16,28 +16,29 @@ func commandInspect(cfg *Config, args ...string) error {
 
 	pokemon := args[0]
 
-	for owned := range captured {
+	if friend, exists := captured[pokemon]; exists {
 
-		if owned == pokemon {
-			c := captured[owned]
-			fmt.Println("You have caught this pokemon.")
+		fmt.Println("You have caught this pokemon.")
 
-			fmt.Printf("Name: %s\nHeight: %d\nWeight: %d\n", c.Name, c.Height, c.Weight)
+		fmt.Printf("Name: %s\nHeight: %d\nWeight: %d\n", friend.Name, friend.Height, friend.Weight)
 
-			fmt.Println("Stats:")
+		fmt.Println("Stats:")
 
-			for stat := range c.Stats {
-				fmt.Printf("-%s: %d\n", c.Stats[stat].Stat.Name, c.Stats[stat].BaseStat)
-			}
-
-			fmt.Println("Types:")
-
-			for ptype := range c.Types {
-				fmt.Printf("-%s\n", c.Types[ptype].Type.Name)
-			}
-		} else {
-			return fmt.Errorf("You have not caught this pokemon.")
+		for stat := range friend.Stats {
+			fmt.Printf("-%s: %d\n", friend.Stats[stat].Stat.Name, friend.Stats[stat].BaseStat)
 		}
+
+		fmt.Println("Types:")
+
+		for pokemon_type := range friend.Types {
+			fmt.Printf("-%s\n", friend.Types[pokemon_type].Type.Name)
+		}
+
+	} else {
+
+		fmt.Println("You have not caught this pokemon.")
+
 	}
+
 	return nil
 }
