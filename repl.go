@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/icefireturtle/pokedex/internal/pokeapi"
 )
 
-func startREPL() {
-	cfg := &Config{}
+func startREPL(cfg *Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -59,12 +60,12 @@ func init() {
 		"map": {
 			name:        "map",
 			description: "Displays the names of the next 20 location areas in the Pokemon World",
-			callback:    commandMap,
+			callback:    commandMapf,
 		},
 		"mapb": {
 			name:        "mapb",
 			description: "Displays the names of the previous 20 location areas in the Pokemon World",
-			callback:    commandMapBack,
+			callback:    commandMapb,
 		},
 		"explore": {
 			name:        "explore",
@@ -89,21 +90,11 @@ func init() {
 	}
 }
 
-type Locations struct {
-	Count    int        `json:"count"`
-	Next     *string    `json:"next"`
-	Previous *string    `json:"previous"`
-	Results  []Location `json:"results"`
-}
-
-type Location struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
-
 type Config struct {
-	Next     string
-	Previous string
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+	currentExplore   *Explore
 }
 
 type Explore struct {

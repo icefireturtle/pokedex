@@ -5,7 +5,7 @@ import "fmt"
 func commandHelp(cfg *Config, args ...string) error {
 	//Header
 	fmt.Println()
-	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Pokedex CLI Help")
 	fmt.Println("Usage:")
 	fmt.Println()
 

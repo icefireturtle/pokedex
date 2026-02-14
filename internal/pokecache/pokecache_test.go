@@ -2,8 +2,8 @@ package pokecache
 
 import (
 	"fmt"
-	"time"
 	"testing"
+	"time"
 )
 
 func TestAddGet(t *testing.T) {
