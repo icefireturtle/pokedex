@@ -71,6 +71,11 @@ func init() {
 			description: "Explores the map and finds pokeman in the area",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch the pokemon encountered",
+			callback:    commandCatch,
+		},
 	}
 }
 
@@ -99,3 +104,10 @@ type Explore struct {
 		} `json:"pokemon"`
 	} `json:"pokemon_encounters"`
 }
+
+type Catch struct {
+	Name       string `json:"name"`
+	Experience int    `json:"base_experience"`
+}
+
+var captured map[string]Catch = make(map[string]Catch)

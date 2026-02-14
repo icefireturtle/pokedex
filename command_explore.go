@@ -18,10 +18,6 @@ func commandExplore(cfg *Config, args ...string) error {
 	location := strings.ToLower(args[0])
 	url := fmt.Sprintf("https://pokeapi.co/api/v2/location-area/%s", location)
 
-	if cfg.Next != "" {
-		url = cfg.Next
-	}
-
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
