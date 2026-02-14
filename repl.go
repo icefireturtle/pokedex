@@ -76,6 +76,11 @@ func init() {
 			description: "Attempt to catch the pokemon encountered",
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "Review Pokemon information including stats and types and whether or not captured",
+			callback:    commandInspect,
+		},
 	}
 }
 
@@ -105,9 +110,22 @@ type Explore struct {
 	} `json:"pokemon_encounters"`
 }
 
+var captured map[string]Catch = make(map[string]Catch)
+
 type Catch struct {
 	Name       string `json:"name"`
 	Experience int    `json:"base_experience"`
+	Height     int    `json:"height"`
+	Weight     int    `json:"weight"`
+	Stats      []struct {
+		BaseStat int `json:"base_stat"`
+		Stat     struct {
+			Name string `json:"name"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Type struct {
+			Name string `json:"name"`
+		} `json:"type"`
+	} `json:"types"`
 }
-
-var captured map[string]Catch = make(map[string]Catch)
